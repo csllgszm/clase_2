@@ -1,0 +1,82 @@
+import datetime
+
+class persoana:
+    def __init__(self, new_nume, new_prenume, new_cnp, new_adress, new_cont_bancar):
+        self.nume = new_nume
+        self.prenume = new_prenume
+        self.cnp = new_cnp
+        self.adresa = new_adress
+        self.cont_bancar = new_cont_bancar
+        self.data_nastere = self.obtine_data_nastere(new_cnp)
+        self.gen = self.obtine_gen_persoana(new_cnp)
+
+    @staticmethod
+    def obtine_data_nastere(cnp):
+        # formatul CNP : G-AA-LL-ZZ - XXXXXX
+        # obtine in urmatorul format: AAAA-LL-ZZ
+        # verificam ca cnp este un string si toate sunt numere
+        rezultat = 'xxxx-xx-xx'
+
+        if type(cnp) == type(str()) and cnp.isdigit():
+            anul = cnp[1:3]
+            luna = cnp[3:5]
+            ziua = cnp[5:7]
+
+            if cnp[0] == '1' or cnp[0] == '2':
+                anul = '19' + anul
+            elif cnp[0] == '5' or cnp[0] == '6':
+                anul = '20' + anul
+            else:
+                print('CNP este gresit!')
+
+            rezultat = anul + '-' + luna + '-' + ziua
+        else:
+            print('CNP este gresit!')
+
+        return rezultat
+
+    @staticmethod
+    def obtine_gen_persoana(cnp):
+        rezultat = 'N'
+
+        if type(cnp) == type(str()) and cnp.isdigit():
+            if cnp[0] == '2' or cnp[0] == '6':
+                rezultat = 'F'
+            elif cnp[0] == '1' or cnp[0] == '5':
+                rezultat = 'M'
+            else:
+                print('Nu este corect CNP-ul!')
+        else:
+            print('Nu este corect CNP-ul!')
+
+        return rezultat
+
+    def get_nume(self):
+        return self.nume
+
+    def set_nume(self, new_nume):
+        self.nume = new_nume
+
+    def get_prenume(self):
+        return self.prenume
+
+    def get_cnp(self):
+        return self.cnp
+
+    def get_varsta(self):
+        date_of_birth = datetime.date(year=int(self.data_nastere[:4]),
+                                      month=int(self.data_nastere[5:7]),
+                                      day=int(self.data_nastere[8:]))
+        today = datetime.date.today()
+        ani =  datetime.date.today().year - date_of_birth.year
+
+        if (datetime.date.today().month < date_of_birth.month) or \
+                ((datetime.date.today().month == date_of_birth.month) and datetime.date.today().day < date_of_birth.day):
+            ani = ani - 1
+
+        return ani
+
+if __name__ == '__main__':
+    p1 = persoana(new_nume='Majeri', new_prenume='Iarina', new_cnp='6041006500368', new_adress='AColo', new_cont_bancar='1165654646')
+    print(p1.get_varsta())
+    pass
